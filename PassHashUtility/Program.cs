@@ -1,19 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Cryptography;
-using System.Security.Policy;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace PassHashUtility
 {
     internal class Program
     {
         static void Main(string[] args)
-        { 
+        {
+            // Validate number of possible arguments
             if (args.Length < 4 || args.Length > 5)
+            {
+                Console.WriteLine("Usage (-d is optional): my-awesome-utility -p <password> -s <salt> -d");
                 throw new ArgumentException($"Wrong arguement amount: {args.Length}");
+            }    
 
             string password = null;
             string salt = null;
@@ -50,19 +50,19 @@ namespace PassHashUtility
             // Perform hashing
             string hashedPassword = ComputeSha256(ComputeSha256(password) + salt);
 
-            // Output result
             Console.WriteLine($"Hashed Password: {hashedPassword}");
         }
 
-        static void PrintUsage()
-        {
-            Console.WriteLine("Usage: my-awesome-utility -p <password> -s <salt> -d");
-        }
-
+        /// <summary>
+        ///  Hash the input string using the SHA256 algorithm
+        /// </summary>
+        /// <param name="inputString"></param>
+        /// <returns></returns>
         static string ComputeSha256(string inputString)
         {
             byte[] hash;
 
+            // Hash input string
             using (HashAlgorithm hashAlgorithm = new SHA256CryptoServiceProvider())
             {
                 byte[] byteString = Encoding.UTF8.GetBytes(inputString);

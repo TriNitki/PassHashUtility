@@ -12,5 +12,6 @@ dotnet build -o out
 After building the project, you can run the utility from the command line:
 
 ```
+cd out
 my-awesome-utility -p password -s salt -d
 ```

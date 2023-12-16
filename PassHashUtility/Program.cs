@@ -45,8 +45,6 @@ namespace PassHashUtility
             string hashedPassword = ComputeSha256(ComputeSha256(password) + salt);
 
             Console.WriteLine($"Hashed Password: {hashedPassword}");
-
-            Console.ReadLine();
         }
 
         /// <summary>

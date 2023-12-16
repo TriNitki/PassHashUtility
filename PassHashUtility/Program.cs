@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Microsoft.Extensions.Configuration;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -14,30 +17,21 @@ namespace PassHashUtility
                 Console.WriteLine("Usage (-d is optional): my-awesome-utility -p <password> -s <salt> -d");
                 throw new ArgumentException($"Wrong arguement amount: {args.Length}");
             }    
-
-            string password = null;
-            string salt = null;
-            bool use3Des = false;
-
-            for (int i = 0; i < args.Length; i += 2)
+            
+            // Read values from the command line
+            var mappings = new Dictionary<string, string>
             {
-                string arg = args[i];
+                ["-p"] = "p",
+                ["-s"] = "s"
+            };
 
-                switch (arg)
-                {
-                    case "-p":
-                        password = args[i + 1];
-                        break;
-                    case "-s":
-                        salt = args[i + 1];
-                        break;
-                    case "-d":
-                        use3Des = true;
-                        break;
-                    default:
-                        throw new ArgumentException($"Incorrect arguement: {arg}");
-                }
-            }
+            var configuration = new ConfigurationBuilder()
+                .AddCommandLine(args, mappings)
+                .Build();
+
+            string password = configuration["p"];
+            string salt = configuration["s"];
+            bool use3Des = args.Contains("-d");
 
             // Validate required parameters
             if (string.IsNullOrEmpty(password))
@@ -51,6 +45,8 @@ namespace PassHashUtility
             string hashedPassword = ComputeSha256(ComputeSha256(password) + salt);
 
             Console.WriteLine($"Hashed Password: {hashedPassword}");
+
+            Console.ReadLine();
         }
 
         /// <summary>
